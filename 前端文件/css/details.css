@@ -1,0 +1,88 @@
+@charset "utf-8";
+body{
+	zoom:1.2;
+	/*background-color: #D2E9FF;*/
+	background-image:url(beijing.jpg);
+}
+ 
+#all{
+	margin:0 auto;
+	width: 70%;
+	/*height: 500px;*/
+	background-color:#D2E9FF;
+	/*opacity:0.5;*/
+}
+#nav{
+	margin-top: -10px;
+	width:100%;
+	height:30px;
+	/*background:#CCC;为了便亍查看区域范围大小，故而加个背景色*/
+}
+#nav ul li{
+	width:33%;
+	height: 25px;
+	float:left;
+	list-style:none;
+	/*background-color: #f00;*/
+}
+#nav ul li p{
+	display:block; 
+	height:20px;
+	font-size:14px;
+	color:#333; 
+	float:left;
+	 padding:0 10px;
+}
+/*#nav ul li p:hover{
+	color:#fff;
+	background:#000;
+}*/
+.wenzi{
+	width: 100%;
+	text-align: center;
+}
+.wenzi2{
+	text-indent:30px;
+}
+.conten{
+	width: 100%;
+	/*height: 300px;
+	background-color: #f00;*/
+}
+.button1{
+	background-color: #1E90FF; /* Green */
+    border: none;
+    color: white;
+    padding: 5px 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+	border-radius: 10px;
+	margin-left: 20px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.head{
+	width: 100%;
+	height: 50px;
+	background-color: #1E90FF ;
+}
+
+.tail{
+	width: 100%;
+	height: 70px;
+	background-color: #1E90FF ;
+}
+
+/*媒体查询代码，表示只有在屏幕尺寸小于810像素的时候才会应用下面的样式*/
+@media screen and (max-width: 810px) {
+	#all{
+		margin:0 auto;
+		width: 100%;
+		/*height: 500px;*/
+		background-color:#D2E9FF;
+		/*opacity:0.5;*/
+	}
+}

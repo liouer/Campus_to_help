@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>订单详情</title>
+	
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="js/isLigin.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="css/details.css">
+</head>
+<body>
+
+	<div id="all"><!-- 整体 -->
+		<!-- 头部 -->
+		<div class="head">
+			<!-- 三个div，图片一个，首页一个，我一个 用到了框架 -->
+			<div style="width: 50%;float: left;">
+				<img src="image/signature.png" class="img-responsive" alt="Cinque Terre" width="280" height="50"
+				style="float: left;opacity: 0.5;clear: both;">
+			</div>
+
+			<div style="width: 25%;float:left;">
+		        <button type="button" class="btn btn-default btn-sm" style="clear: both;margin-left: 80%;margin-top: 10px;opacity:0.8;">
+		          <span class="glyphicon glyphicon-home"></span> 首页
+		        </button>
+		    </div>
+
+			<div class="dropdown" style="width: 25%;float: left;">
+		        <button type="button" class="btn btn-default btn-sm" id="user" data-toggle="dropdown" style="clear: both;margin-left: 15%;margin-top: 10px;opacity:0.8;">
+		          <span class="glyphicon glyphicon-user"></span> 我
+		        </button>
+		        <ul class="dropdown-menu" role="menu" aria-labelledby="user">
+					<li role="presentation">
+						<a role="menuitem" tabindex="-1" href="#">我的订单</a><!-- 跳到MyOrder -->
+					</li>
+					<!-- 通过isLogin.js来判断这三个的隐藏或者显示 -->
+					<li role="presentation" id="logout">
+						<a role="menuitem" tabindex="-1" href="#">登出</a>
+					</li>
+					<li role="presentation" id="login">
+						<a role="menuitem" tabindex="-1" href="#">登陆</a>
+					</li>
+					<li role="presentation" id="registered">
+						<a role="menuitem" tabindex="-1" href="#">注册</a>
+					</li>
+				</ul>
+		    </div>
+
+		</div>
+	
+		<div class="wenzi">
+			<h2>订单标题</h2><!-- 从数据库中取出打印出页面 -->
+		</div>
+		<hr color=#6666FF><!-- 分割线 -->
+		<div id="nav">
+			<ul>
+				<li><P>订单类型</P></li><!-- 从数据库中取出打印出页面 -->
+				<li><P>订单状态</P></li><!-- 他人看的页面，目前设定没有已接单类型 -->
+				<li><P>发布时间</P></li>
+			</ul>
+		</div>
+		<div class="conten">
+			<p class="wenzi2">我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......我是订单详细内容.......</p><!-- 从数据库中取出打印出页面 -->
+		</div>
+		<div>
+
+			<script>
+				//取参数方法
+				function getQueryString(name) {
+					var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+					if (result == null || result.length < 1) {
+					return "";
+					}
+					return result[1];
+				}
+				//判断是否显示“接单”按钮
+				window.onload=function(){//获取打开订单是否是用户本人的方法
+					//通过上个页面的uName=value获取打开订单人的学号
+					var person1=getQueryString("uName")//www.xxx.com/xxx.html?uName=value  前面指定要传值的目标地址，value为参数
+					var person2=‘<%=uName%>’ //看能不能通过订单号查到下单的学号
+					if(console.log("person1"=="person2")){//通过checked属性判断是否被选中
+					//if(1==1){
+						document.getElementById('jiedan').style.display='none';
+					}
+					else{
+						document.getElementById('jiedan').style.display='block';
+					}
+				}
+			</script>
+
+			<button id="jiedan" class="button1">接单</button><!-- 用js做判断，如果已接单则没有“接单”按钮，如果是本人订单也没有该按钮 -->
+			<button class="button1">返回</button>
+		</div>
+		<div class="tail">
+			<!-- 用到了框架显示图标 -->
+			<p style="margin-left: 10%;"><span class="glyphicon glyphicon-earphone"> 24小时服务热线：1111-111-111</span></p>
+			<p style="margin-left: 10%;"><span class="glyphicon glyphicon-envelope"> 意见反馈邮箱：1111111111@qq.com</span></p>
+		</div>
+	</div>
+</body>
+</html>

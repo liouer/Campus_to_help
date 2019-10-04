@@ -1,0 +1,50 @@
+@charset "utf-8";
+body{
+	zoom:1.2;
+	/*background-color: #D2E9FF;
+	background-image:url(beijing.jpg);*/
+}
+ 
+#all{
+	position: relative;
+	margin:0 auto;
+	width: 70%;
+	/*height: 500px;*/
+	background-color:#F0FFFF;
+	/*opacity:0.5;*/
+}
+
+.detail {
+	overflow: hidden; /*自动隐藏文字*/
+	text-overflow: ellipsis;/*文字隐藏后添加省略号*/
+	white-space: nowrap;/*强制不换行*/
+	width: 20em;/*限制20字后不显示，不允许出现半汉字截断*/
+	color:#6699ff;border:1px #ff8000 dashed;
+}
+
+.head{
+	width: 100%;
+	height: 50px;
+	background-color: #1E90FF ;
+}
+
+.tail{
+	width: 100%;
+	height: 70px;
+	background-color: #1E90FF ;
+}
+
+/*媒体查询代码，表示只有在屏幕尺寸小于810像素的时候才会应用下面的样式*/
+@media screen and (max-width: 810px) {
+	#all{
+		position: relative;
+		margin:0 auto;
+		width: 100%;
+		/*height: 500px;*/
+		background-color:#F0FFFF ;
+		/*opacity:0.5;*/
+	}
+	/*#section1, #section2, #section3, #section41, #section42  {
+		margin-left: 150px;
+	}*/
+}
