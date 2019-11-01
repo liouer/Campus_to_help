@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>测试3</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">  <!-- Google web font "Open Sans" -->
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  
+  <link rel="stylesheet" href="css/demo.css" />
+  <link rel="stylesheet" href="css/templatemo-style.css">
+  <link rel="stylesheet" href="./themes/csslider.default.css"><!-- ******* -->
+  <script type="text/javascript" src="js/modernizr.custom.86080.js"></script>
+		
+  <style>
+        @import url(http://fonts.googleapis.com/css?family=Raleway:400,700|Lato);
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 2px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-track {
+            background: none;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(74, 168, 0, 0.6);
+        }
+
+        ul, ol {
+            padding-left: 40px;
+        }
+
+        html, body {
+            height: 100%;
+            text-align: center;
+            font: 400 100% 'Raleway', 'Lato';
+            background-color: #282828;
+            color: #CCC;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 310%;
+        }
+
+        h2 {
+            font-weight: 400;
+            font-size: 120%;
+            color: #71AD37;
+        }
+
+        #slider1 {
+            margin: 20px;
+            font-family: 'Lato';
+        }
+
+            #slider1 > ul > li:nth-of-type(3) {
+                background: url(./images/04.jpg);
+            }
+
+            #slider1 > input:nth-of-type(3):checked ~ ul #bg {
+                width: 80%;
+                padding: 22px;
+                -moz-transition: .5s .5s;
+                -o-transition: .5s .5s;
+                -webkit-transition: .5s .5s;
+                transition: .5s .5s;
+            }
+
+                #slider1 > input:nth-of-type(3):checked ~ ul #bg div {
+                    -moz-transform: translate(0);
+                    -ms-transform: translate(0);
+                    -o-transform: translate(0);
+                    -webkit-transform: translate(0);
+                    transform: translate(0);
+                    -moz-transition: .5s .9s;
+                    -o-transition: .5s .9s;
+                    -webkit-transition: .5s .9s;
+                    transition: .5s .9s;
+                }
+        
+        /*图2*/
+        #bg {
+            color: #000;
+            padding: 22px 0;
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 40%;
+            width: 0;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        #bg:before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 1px;
+            height: 100%;
+            width: 100%;
+            z-index: -1;
+            background: url(./images/04.jpg) 1px 23%;
+            -webkit-filter: blur(7px);
+        }
+
+        #bg:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.35);
+            pointer-events: none;
+        }
+
+        #bg div {
+            -moz-transform: translate(120%);
+            -ms-transform: translate(120%);
+            -o-transform: translate(120%);
+            -webkit-transform: translate(120%);
+            transform: translate(120%);
+        }
+
+        .scrollable p {
+            padding: 30px;
+            text-align: justify;
+            line-height: 140%;
+            font-size: 120%;
+        }
+    </style>
+</head>
+
+	<body>
+
+			<div id="particles-js"></div>
+			<!-- 背景图片轮播 -->
+			<ul class="cb-slideshow">
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	            <li></li>
+	        </ul>
+
+			<div id="slider1" class="csslider" style="z-index: 1001">
+                <input type="radio" name="slides" id="slides_1" checked /><!-- 刷新后第一个图的轮播按钮不出来 -->
+                <input type="radio" name="slides" id="slides_2" />
+                <input type="radio" name="slides" id="slides_3" />
+                <input type="radio" name="slides" id="slides_4" />
+                <ul>
+                    <li style="background: url(./images/06.jpg)">
+                        <h1>校园帮使用指南</h1><br/><br/><br/><br/>
+                        <font size="5">
+                            <p style="font-weight: bold;text-indent: 2em;">在大学，您是否还在为三缺一的尴尬而纠结!？</p>
+                        </font> 
+                        <br/>
+                        <font size="5">
+                            <p style="font-weight: bold;text-indent: 4em;">在大学，您是否还在为满怀热心无处泼洒而烦恼!？</p>
+                        </font> 
+                        <br/>
+                        <font size="5">
+                            <p style="font-weight: bold;text-indent: 6em;">在大学，您是否还在为身患懒癌晚期不想动弹却偏偏要出门而痛苦！？</p>
+                        </font>
+                        <br/><br/><br/><br/><br/><br/>
+                        <font size="7">
+                            <!-- <strong>不要怕！我们校园帮来帮你！</strong> -->
+                            <p style="text-align: center;font-weight:bold;">不要怕！我们校园帮来帮你！</p>
+                        </font>
+                        
+                    </li>
+                    <li style="background: url(./images/08.jpg)">
+                        <br/><br/><br/><br/>
+                        <font size="7">
+                            <p style="font-weight: bold;text-indent: 2em;">校园帮</p>
+                        </font><br><br/>
+                        <font size="6">
+                            <p style="font-weight: bold;text-indent: 2em;">致力为全校师生提供一个相互帮助的求助平台</p><br/>
+                            <p style="font-weight: bold;text-indent: 2em;">为更多的师生提供便利，共创美好新校园</p>
+                        </font>
+                    </li>
+                    <li>
+                        <div id="bg">
+                            <div>
+                                <font size="6">
+                                    <p style="font-weight: bold;text-indent: 2em">只要你需要</p>
+                                </font><br/>
+                                <font size="5">
+                                    <p style="font-weight: bold;">就可以在我们这里挥洒你的热情<br><br/>得到大家的帮助</p>
+                                </font>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="scrollable">
+                        <h1>校园帮使用说明</h1>
+                        <p style="line-height: 200%;letter-spacing: 0.1em;">
+                            用户点击下面按钮，可以可以直接进入首页。<br/>
+                            在首页，未注册的用户可以点击注册注册新用户，已经注册的用户可以直接登录。未注册的用户只能在页面进行浏览任务，所以，等什么呢？快注册！解锁校园帮更多功能！<br/>
+                            已经登录的用户则是可以在浏览任务时接受任务，去化作Superman拯救他人于危难！也可以自己去发布任务请求帮助，等待那个他/她为你伸出援手！已经登录的用户更是可以在个人界面查看自己的记录哦！看着自己帮助过别人记录，难道不觉得自己棒棒哒吗？看着自己求助后获得帮助的记录，难到不觉得校园就是一个充满爱的大家庭吗？<br/>
+                            来吧！<br/>注册，登录，成为我们校园帮的一员，我们给你一个正能量满满的校园！
+                        </p>
+                    </li>
+                </ul>
+                <div class="arrows">
+                    <label for="slides_1"></label>
+                    <label for="slides_2"></label>
+                    <label for="slides_3"></label>
+                    <label for="slides_4"></label>
+                </div>
+                <div class="navigation">
+                    <div>
+                        <label for="slides_1"></label>
+                        <label for="slides_2"></label>
+                        <label for="slides_3"></label>
+                        <label for="slides_4"></label>
+                    </div>
+                </div>
+                <div class="but">
+                    <a href="https://www.baidu.com/"><button class="button">开始使用校园帮</button></a>
+                </div>
+            </div>
+            
+	</body>
+
+	<script type="text/javascript" src="js/particles.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+</html>
