@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page_title">任务详情</title>
+    <meta name="keywords" content="{$SiteInfo.keywords}">
+    <meta name="description" content="{$SiteInfo.description}">
+    <style>
+        .action_btn{
+            height: 28px;
+            padding: 0 20px !important;
+        }
+    </style>
+</head>
+
+<body>
+<!--蒙版-->
+<div id="mask_div" style="width: 100%;background-color: #FFFFFF;height: 2000px;z-index: 19;display: block;position: relative;"></div>
+<!--header的容器-->
+<div id="header"></div>
+
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+    <!--menu的容器-->
+    <div id="menu"></div>
+
+    <div class="boxed">
+        <div id="content-container">
+            <div id="page-content">
+                <div class="panel">
+                    <div class="panel-body" style="width: 100%; padding-bottom: 0">
+                        <h1 class="page-header text-overflow pad-btm">任务详情</h1>
+                        <hr class="hr-sm">
+                    </div>
+                    <div class="panel-body" >
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<!--加载菜单-->
+<script src="js/jquery-2.2.4.min.js"></script>
+<script>
+    $("#menu").load("menu.html",function () {
+        $("#header").load("header.html",function () {
+            $("#mask_div").hide();
+        });
+    });
+</script>
+</html>

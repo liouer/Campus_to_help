@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/nifty.min.css" rel="stylesheet">
+    <link href="css/demo/nifty-demo-icons.min.css" rel="stylesheet">
+    <link href="css/demo/nifty-demo.min.css" rel="stylesheet">
+    <link href="plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
+    <link href="plugins/pace/pace.min.css" rel="stylesheet">
+    <script src="plugins/pace/pace.min.js"></script>
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/nifty.min.js"></script>
+    <script src="js/demo/bg-images.js"></script>
+</head>
+<body>
+<div id="container" class="cls-container">
+    <div id="bg-overlay" class="bg-img" style="background-image: url(img/bg-img/bg-img-1.jpg);"></div>
+    <div class="cls-content">
+        <div class="cls-content-sm panel">
+            <div class="panel-body">
+                <div class="mar-ver pad-btm">
+                    <img src="img/logo.png" style="margin: 0 auto;width: 100%" alt="">
+                </div>
+                <form id="formData" method="post" onclick="return false">
+                    <div class="form-group">
+                        <div id="ggg"></div>
+                        <label>
+                            <input id="uName" name="uName" type="text" class="form-control" placeholder="学号" autofocus>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="uPassword" name="uPassword" type="password" class="form-control" placeholder="密码">
+                        </label>
+                    </div>
+                    <!--		                <div class="checkbox pad-btm text-left">-->
+                    <!--		                    <input id="demo-form-checkbox" class="magic-checkbox" type="checkbox">-->
+                    <!--		                    <label for="demo-form-checkbox">记住密码</label>-->
+                    <!--		                </div>-->
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="check1()">登录</button>
+                </form>
+            </div>
+            <div class="pad-all">
+                <a href="introduce.html" class="btn-link mar-rgt">返回介绍页</a>
+                <a href="register.html" class="btn-link mar-lft">立即注册</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--接接口-->
+<script>
+    function isLogin(){
+        var url = "http://localhost:8081/schoolhelp/userController/login.do";
+        var uName = $("#uName").val();
+        var uPassword = $("#uPassword").val();
+        $.ajaxSettings.xhrFields = {
+            withCredentials : true
+        };
+        console.log("未传前的uName:",uName);
+        $.ajax({											//传参
+            crossDomain:true,
+            url:url,
+            data:{
+                "uName":uName,
+                "uPassword":uPassword
+            },
+            type:"get",
+            dataType:"json",
+            success:function (data) {					//成功回调函数
+                console.log("data:\n",data,"\n\n");
+                console.log("data.uName:\n",data.uName);
+                console.log("不data的uName\n：",uName);
+                console.log("data.name:\n:",data.name);
+                /*这里要加载一个已经登录了的主页*/
+                if (data.status == 200) {
+                    // console.log(data.token);             //后台返回数据显示
+                    //返回success则登录成功，跳转到index页面并带着一个学号的值，跳到index把学号传给后台，获取当前学号的数据。
+                    if (data.message == "success") {
+                        //window.location.href传递学号
+                        //var indexUser = data.uName;
+                        //var indexName =
+                        //console.log("indexUser:",indexUser);
+                        alert("登录成功！");
+                        //var urlUser = encodeURI("index1.html?indexUser=" + data.uName +"=indexName=" + data.name);
+                        //window.location.href = "index1.html";
+
+                        if (typeof(Storage) !== "undefined") {
+                            // 存储
+                            localStorage.setItem("userLocalId", data.uName);
+                            localStorage.setItem("userLocalName", data.name);
+                            // 检索
+                            //document.getElementById("ggg").innerHTML = localStorage.getItem("userLocalId");
+                            document.getElementById("ggg").innerHTML = localStorage.getItem("userLocalName");
+                        } else {
+                            alert("对不起，您的浏览器不支持访问。");
+                        }
+                        window.location.href = "index1.html";
+                    }
+                    else {
+                        alert("学号或密码错误，请重试");
+                    }
+                }
+                else {
+                    alert("网页跑丢啦！");
+                }
+            },
+            fail:function(data){
+                console.log("fail");
+                console.log(data.message);
+            },
+            error:function (data) {
+                console.log("error");
+                console.log(data.message);
+            }
+        });
+        //}
+    }
+</script>
+
+<script>
+    function check1() {
+        var uName = $('#uName').val();
+        var uPassword = $('#uPassword').val();
+
+        if (uName == ""|| uPassword == ""){
+            alert("内容不能为空");
+        }
+        else {
+            if (uName.length!= 12){
+                alert("请填写正确的学号");
+                return;
+            }
+            if (uPassword.length< 6 || uPassword.length> 12){
+                alert("密码至少6位或不超于12位");
+            }else {
+                isLogin();
+            }
+        }
+    }
+</script>
+</body>
+</html>

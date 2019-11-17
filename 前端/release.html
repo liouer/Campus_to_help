@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--发布订单页面-->
+<!-- 设置了输入限制
+    都是必填（不包图片）
+    刷新删除图片
+    添加图片限制：<2M -->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page_title">发布求助信息</title>
+    <meta name="keywords" content="{$SiteInfo.keywords}">
+    <meta name="description" content="{$SiteInfo.description}">
+    <style>
+        .action_btn {
+            height: 28px;
+            padding: 0 20px !important;
+        }
+        .file-box {
+            position: relative;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            background: url('img/addImage.jpg')no-repeat;
+            background-size: 100px 100px;
+            float: left;
+            display : inline-block;
+        }
+        #input_file {
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        .float {
+            width: 100px;
+            height: 100px;
+            float: left;
+            display : inline-block;
+        }
+    </style>
+</head>
+<body>
+<!--蒙版-->
+<div id="mask_div"
+     style="width: 100%;background-color: #FFFFFF;height: 100%;z-index: 19;display: block;position: relative;"></div>
+
+<!--header的容器-->
+<div id="header"></div>
+
+<!--内容div-->
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+    <!--menu的容器-->
+    <div id="menu"></div>
+
+    <div class="boxed">
+        <div id="content-container">
+            <div id="page-content">
+                <div class="panel">
+                    <div class="panel-body" style="width: 100%; padding-bottom: 0">
+                        <h1 class="page-header text-overflow pad-btm">发布求助信息</h1>
+                        <hr class="hr-sm">
+                    </div>
+                    <div class="panel-body">
+                        <form method="post" id="release_form" class="form-horizontal" enctype="multipart/form-data" target="frameName">       <!--enctype：对表单数据进行编码-->
+                            <!-- <input type="hidden" name="orderNo">//用来干嘛的？ -->
+                            <div class="row">
+                                <div class="col-md-3 mar-btm">
+                                    <input  id="title" name="title" type="text" class="form-control" placeholder="订单标题(1-20字）" autofocus maxlength="20" title="标题"><!-- 超过二十个输不进去 -->
+                                </div>
+
+                                <div class="col-md-2 mar-btm">
+                                    <select id="orderType" name="orderType"  class="form-control" onclick="getType()" title="任务类型">
+                                        <!--问后台类型的传值-->
+                                        <option value="HELPBUY">跑腿</option>
+                                        <option value="GROUP">组团</option>
+                                        <option value="LOOKFOR">寻物</option>
+                                        <option value="UNUSED">闲置</option>
+                                        <option value="RESOURCESHARE">资源共享</option>
+                                        <option value="OTHER">其他</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1 mar-btm">
+                                    <input  id="groupNum" name="groupNum" type="text" class="form-control" placeholder="组团人数" autofocus onkeyup = "value=value.replace(/[^\d]/g,'')" title="组团人数"><!-- 只能输入数字 -->
+                                </div>
+                                <div class="col-md-5 mar-btm pull-right">
+                                    <!-- <button class="btn btn-success pull-right" onclick="show_release_window()">发布</button> -->
+                                    <button class="btn btn-success pull-right" onclick="check()" id="send">发布</button>
+                                    <a href="index.html" class="btn btn-success pull-right" id="return">回到首页</a>
+                                    <div class="col-md-4 mar-btm pull-right" style="padding-left: 0">
+                                        <input  id="name" name="name" type="text" class="form-control" placeholder="联系人" autofocus title="联系人">
+                                    </div>
+                                    <div class="col-md-6 mar-btm pull-right">
+                                        <input  id="tel" name="tel" type="text" class="form-control" placeholder="联系电话（仅允许输入数字）" maxlength="11" onkeyup = "value=value.replace(/[^\d]/g,'')" title="联系电话"><!-- 只允许输入数字，位数不超过11位 -->
+                                    </div>
+                                </div>
+                                <textarea id="orderDetail" name="orderDetail" placeholder="详细内容：&#10;例：&#10;9月9号晚上9点,9栋109号房,找一个一起写作业的小姐姐" rows="13"
+                                          class="form-control" autofocus title="详细内容"></textarea>
+                            </div>
+
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <!--===================================================-->
+                                    <div class="bord-top pad-ver" id="up">
+                                        <!-- <p>上传<input type="file" name="file"></p> -->
+                                        <div class="file-box">
+                                            <input type="file" name="fileWGPicture" id="input_file" hidden accept="image/*" onchange="showImgToView('input_file');" title="图片" />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div id="dz-previews">
+
+                                </div>
+                            </div>
+                        </form>
+                        <iframe src="" frameborder="0" hidden name="frameName"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--发布模态框-->
+<!--发布模态框的id="release_window"
+    确定的onclick()="releaseOrder()"-->
+<!-- <div class="modal fade" id="release_window" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            模态框
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <h3 style="text-align: center">请问确定要发布吗？</h3>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" name="urlId">
+                <button data-dismiss="modal" class="btn btn-default" type="button">取消</button>
+                <button class="btn btn-primary" onclick="sendOrderInfo()">确定</button>
+            </div>
+            模态框end
+        </div>
+    </div>
+</div> -->
+
+</body>
+
+<!--加载菜单-->
+<script src="js/jquery-2.2.4.min.js"></script>
+<script>
+    $("#menu").load("menu.html", function () {
+        $("#header").load("header.html", function () {
+            $("#mask_div").hide();
+        });
+    });
+
+</script>
+<script>
+    document.getElementById("index_user").innerHTML = localStorage.getItem("userLocalName");
+    var userId = localStorage.getItem("userLocalId");
+    function check(){
+        console.log("检查表单");
+        var myselect = document.getElementById("orderType");　　//获取select对象
+        var index = myselect.selectedIndex;　　　　　　　　　//获取被选中的索引
+        var type = myselect.options[index].value;　　　　　　//获取被选中的值
+        var myform = document.getElementById("release_form");   //获得form表单对象
+        //console.log(myform.length);
+        for(var i=0;i<7;i++){               //循环form表单
+            if (i==3 || i==4) 
+                continue ;
+            if (i==2 && type!="GROUP") 
+                continue ;
+              if(myform.elements[i].value==""){          //判断每一个元素是否为空
+                    alert(myform.elements[i].title+"不能为空！");
+                    myform.elements[i].focus();             //元素获得焦点
+                    return ;
+              }
+        }
+        firm();
+    }
+    function firm(){
+        var r = confirm("确定发布任务");
+        if (r == true) {
+            console.log("进入发送信息到后端阶段");
+            var judge = sendOrderInfo();
+            if (judge) {
+                alert("发布任务成功");
+                document.getElementById('send').style.display='none';//发布按钮隐藏
+                document.getElementById('return').style.display='block';//回到首页按钮显示
+            }
+            else{
+                alert("发布任务失败");/*
+                document.getElementById('send').style.display='none';//发布按钮隐藏
+                document.getElementById('return').style.display='block';//回到首页按钮显示*/
+            }
+        } else {
+
+        }
+
+    } 
+</script>
+<!-- 根据下拉框下拉在组团才显示组团人数输入框 -->
+<script>
+    $("#groupNum").hide();
+    $("#return").hide();
+    //判断是否显示“组团人数”控件
+    function getType(){
+        document.getElementById('groupNum').style.display='none';//隐藏
+        //获取下拉框的值
+        var myselect = document.getElementById("orderType");　　//获取select对象
+        var index = myselect.selectedIndex;　　　　　　　　　//获取被选中的索引
+        var type = myselect.options[index].value;　　　　　　//获取被选中的值
+        //alert(type);　　　　//检验是否成功获取
+        if(type=="GROUP"){//通过checked属性判断是否被选中
+            document.getElementById('groupNum').style.display='block';//判断是自己的订单，显示
+        }
+        else{
+            document.getElementById('groupNum').style.display='none';//隐藏
+        }
+    }
+</script>
+<!-- 得到链接传过来的当前用户的学号 -->
+<script>
+    //取参数方法
+    function getQueryString(name) {
+        var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+        return "";
+        }
+        return result[1];
+    }
+    /*//判断是否显示“接单”按钮
+    window.onload=function(){//获取打开订单是否是用户本人的方法
+        //通过上个页面的uName=value获取打开订单人的学号
+        var person1=getQueryString("indexNo")//www.xxx.com/xxx.html?indexNo=value  前面指定要传值的目标地址，value为参数
+        var person2=‘<%=uName%>’ //看能不能通过订单号查到下单的学号
+        if(console.log("person1"=="person2")){//通过checked属性判断是否被选中
+        //if(1==1){
+            document.getElementById('jiedan').style.display='none';//判断是自己的订单，点单按钮隐藏
+        }
+        else{
+            document.getElementById('jiedan').style.display='block';
+        }
+    }*/
+</script>
+
+
+<!-- 动态添加图片，设置图片的值并回显图片 -->
+<script type="text/javascript">
+    dataArr = { data : [] };
+    var imgReader = new FileReader();   //创建FileReader对象
+    //正则表达式 过滤图片文件
+    regexImageFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+    //file表单改变事件，将选择的图片显示到img元素
+    function showImgToView(inputFileId) {
+        //console.log("选择图片")
+        var imgFile = $("#" + inputFileId).get(0).files[0];
+        var imgSize = imgFile.size;
+        console.log(imgSize);
+       //判断上传文件是否为图片格式
+        if (!regexImageFilter.test(imgFile.type)) {
+             alert("请选择有效的图片文件！");
+        }
+        else if (imgSize>2*1024*1024) {
+            alert("上传的图片的大于2M,请重新选择！");
+        }
+        else 
+        {
+            file_name=imgFile.name;
+            imgReader.readAsDataURL(imgFile);  //转成base64
+        }
+    }
+    //读取文件 onload事件
+    imgReader.onload = function (evt) {
+        var arr = file_name.split(".");                  //   再以"."作为分隔符
+        var filename = arr[0];
+        var suffix = arr[arr.length - 1];
+        //存base64
+        var imgMsg = {
+            name : filename,//获取文件名
+            suffix: suffix,//文件后缀名
+            base64 : this.result   //imgreader.readAsDataURL方法执行完后，base64数据储存在imgreader.result里
+            }
+        dataArr.data.push(imgMsg); 
+        //console.log("文件名" + imgMsg.name + "得到后缀名" + imgMsg.suffix + "base64文件" + imgMsg.base64);
+        result = '<div style="display:none" class="result" width="100" height="100" ><img src="'+this.result+'" alt=""/></div>';
+        div = document.createElement('div');
+        div.innerHTML = result;
+        div['className'] = 'float';
+        document.getElementsByTagName("div")[41].appendChild(div);  　　//插入页面
+        var img = div.getElementsByTagName('img')[0];
+        img.onload = function(){
+            var nowHeight = ReSizePic(this); //设置图片大小
+            this.parentNode.style.display = 'block';
+            var oParent = this.parentNode;
+            if(nowHeight){
+                oParent.style.paddingTop = (oParent.offsetHeight - nowHeight)/2 + 'px';
+            }
+        }
+        $(".result").attr("src", evt.target.result);//将图片显示在页面
+    };
+    function ReSizePic(ThisPic) {
+        var RePicWidth = 100; //这里修改为您想显示的宽度值
+        var TrueWidth = ThisPic.width; //图片实际宽度
+        var TrueHeight = ThisPic.height; //图片实际高度
+        if(TrueWidth>TrueHeight){
+            //宽大于高
+            var reWidth = RePicWidth;
+            ThisPic.width = reWidth;
+            //垂直居中
+            var nowHeight = TrueHeight * (reWidth/TrueWidth);
+            return nowHeight;  //将图片修改后的高度返回，供垂直居中用
+        }else{
+            //宽小于高
+            var reHeight = RePicWidth;
+            ThisPic.height = reHeight;
+        }
+    }
+
+</script>
+
+<!--show_release_window()    作用：传orderNo的值给accept_window模态框里（被refresh函数的接单按钮调用）-->
+<script>
+    function show_release_window() {                  //拿到refresh函数里后台给的orderNo这里命名为orderNo  作用：后面可用来改变订单的状态等操作
+        //$("input[name='urlId']").val(urlId);
+        $("#release_window").modal("show");                  //显示确认订单弹窗
+    }
+</script>
+
+
+<!--将发布订单内容传给后台：sendReleaseInfo()-->
+<script type="text/javascript">
+    function sendOrderInfo() {
+        //$("#release_window").modal("hide");//隐藏弹窗
+        console.log("去发送信息到后端111");
+        console.log("跳进了函数里");
+        var url = "http://localhost:8080/schoolhelp/orderController/addOrder.do";                             //后台方法地址
+        var inderNo = userId;    //用户学号     
+        var orderTitle = $("#title").val();         //任务标题内容
+        console.log("标题：" + orderTitle);
+        var orderDetail = $("#orderDetail").val();  //任务详细内容
+        console.log("详细：" + orderDetail);
+        var myselect = document.getElementById("orderType");　　//获取select对象
+        var index = myselect.selectedIndex;　　　　　　　　　//获取被选中的索引
+        var orderType = myselect.options[index].value;　　　　　　//获取被选中的值(eg:GROUP)
+        console.log("任务类型：" + orderType);    
+        var orderUser = $("#name").val();
+        console.log("联系人" + orderUser);  
+        var orderPhon = $("#tel").val();
+        console.log("联系电话：" + orderPhon);  
+        var groupNum = $("groupNum").val();
+        console.log("参团人数" + groupNum);  
+        //var Images = JSON.stringify(dataArr);
+        //console.log("照片数组情况：" + Images);//我给的图片信息时数组里面的字典，提取方法
+        var grou = dataArr["data"];//数组
+        //console.log(JSON.stringify(grou));
+        //var dict = grou[0];//字典
+        //console.log(JSON.stringify(dict));
+        //var base = dict["base64"];
+        //console.log(JSON.stringify(base));//得到的base64
+        $.ajax({
+            url:url,
+            type:"post",         
+            dataType:"json",
+            data:{
+                //"uName":person1,           //学号
+                "orderTitle":orderTitle,     //标题
+                "orderDetail":orderDetail,   //详细内容
+                "orderType":orderType,       //任务类型
+                "groupNum":groupNum,        //组团人数
+                "orderUser":orderUser,       //发布任务联系人
+                "orderPhon":orderPhon,       //发布任务联系方式
+                "orderImages":grou       //上传图片字典数组
+            },
+            success: function (data) {                   //请求成功回调方法
+                if (data.status == "200"){
+                    console.log("inside ajax's data.indexNo", + data.indexNo);          //发布订单人的学号
+                    console.log("inside ajax's data.uName", + data.uName);              //后台返回数据显示
+                    console.log("inside ajax's data.orderTitle", + data.orderTitle);    //任务标题内容
+                    console.log("inside ajax's data.orderDetail", + data.orderDetail);  //任务详细内容
+                    console.log("inside ajax's data.orderType", + data.orderType);      //任务类型
+                    console.log("inside ajax's data.orderUser", + data.orderUser);      //发布任务联系人
+                    console.log("inside ajax's data.orderPhon", + data.orderPhon);      //任务联系电话
+                    console.log("inside ajax's data.orderNo", + data.orderNo);          //任务单号（后台自己定）
+                    console.log("inside ajax's data.orderImages", + JSON.stringify(data.orderImages));  //回传字典数组,转为字符串打印
+                    alert(data);    //显示出来
+                    //show_system_tip(msg);
+                    show_system_tip(data.message);
+                    return true;
+                }
+            },
+            fail:function(data){
+                console.log("fail");
+                console.log(data);
+            },
+            error:function (data) {
+                console.log("error");
+                console.log(data);
+            }
+
+        });
+        return false;
+    }
+</script>
+</html>

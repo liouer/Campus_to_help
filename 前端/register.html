@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/nifty.min.css" rel="stylesheet">
+    <link href="css/demo/nifty-demo-icons.min.css" rel="stylesheet">
+    <link href="css/demo/nifty-demo.min.css" rel="stylesheet">
+    <link href="plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
+    <link href="plugins/pace/pace.min.css" rel="stylesheet">
+    <script src="plugins/pace/pace.min.js"></script>
+    <script src="js/jquery-2.2.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/nifty.min.js"></script>
+    <script src="js/demo/bg-images.js"></script>
+</head>
+<body>
+<div id="container" class="cls-container" >
+    <div id="bg-overlay" class="bg-img" style="background-image: url(img/bg-img/bg-img-1.jpg);"></div>
+    <div class="cls-content">
+        <div class="cls-content-sm panel">
+            <div class="panel-body">
+                <div class="mar-ver pad-btm">
+                    <img src="img/logo.png" style="margin: 0 auto;width: 100%" alt="">
+                </div>
+                <form id="form_data" method="post" onclick="return false;">
+                    <div class="form-group">
+                        <label>
+                            <input id="uName" name="uName" type="text" class="form-control" placeholder="学号" autofocus>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="uPassword" name="uPassword" type="password" class="form-control" placeholder="密码(6-12位)">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="uPassword1" name="uPassword1" type="password" class="form-control" placeholder="确认密码(6-12位)">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="name" name="name" type="text" class="form-control" placeholder="姓名">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="academy" name="academy" type="text" class="form-control" placeholder="学院">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="major" name="major" type="text" class="form-control" placeholder="专业">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="grade" name="grade" type="text" class="form-control" placeholder="班级">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input id="tel" name="tel" type="text" class="form-control" placeholder="手机号码">
+                        </label>
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" onclick="sendUserInfo();">注册</button>
+                </form>
+                <div class="pad-all">
+                    <a href="introduce.html" class="btn-link mar-rgt">返回介绍页</a>
+                    <a href="login.html" class="btn-link mar-lft">已有账号，立即登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function sendUserInfo() {
+        console.log("跳进了函数里");
+        $.ajaxSettings.xhrFields = {
+            withCredentials : true
+        };
+      //  function check() {
+            // 规定：学号是12位数字；     密码：至少6位，最多12位，不论格式；     姓名：中文或英文，不能有符号；    手机号码：11位数字；   学院专业班级不记格式
+            var uName = $('#uName').val();
+            var name = $('#name').val();
+            var uPassword = $('#uPassword').val();
+            var uPassword1 = $('#uPassword1').val();
+            var tel = $('#tel').val();
+            var academy = $('#academy').val();
+            var grade = $('#grade').val();
+            var major = $('#major').val();
+
+            if (uName == "" || name == "" || uPassword == "" || uPassword1 == "" || tel == "" || academy == "" || grade == "" || major == ""){
+                alert("内容不能为空");
+                return;
+            }
+            else{
+                if (uName.length!= 12){
+                    alert("请填写正确的学号");
+                    return;
+                }
+                if (uPassword.length< 6 || uPassword.length> 12){
+                    alert("密码至少6位或不超于12位");
+                    return;
+                }
+                if (uPassword!= uPassword1){
+                    alert("两次密码不一致");
+                    return;
+                }
+                if (tel.length!= 11){
+                    alert("请填写正确的手机号码");
+                    return;
+                }else {
+                    console.log("ajax data:",$('#form_data').serialize());
+                    var url = "http://localhost:8081/schoolhelp/userController/addUser.do";                                   //后台方法地址
+                    $.ajax({
+                        crossDomain:true,
+                        url:url,
+                        type:"post",
+                        dataType:"json",
+                        data:$('#form_data').serialize(),
+                        success: function (data) {                   //请求成功回调方法
+                            console.log("success:data.message:", + data.message);             //后台返回数据显示
+                            console.log("success:data.status:", + data.status);
+                            alert("注册成功");
+                            window.location.href = 'login.html';
+                        },
+                        fail:function (data) {
+                            console.log("fail:data.message:",data.message);
+                        },
+                        error:function (data) {
+                            console.log("error:data.message",data.message);
+                        }
+                    });
+                }
+            }
+       // }
+        // return false;
+    }
+</script>
+
+<!-- 判断输入格式check()-->
+<!--<script>-->
+<!--    function check() {-->
+<!--        // 规定：学号是12位数字；     密码：至少6位，最多12位，不论格式；     姓名：中文或英文，不能有符号；    手机号码：11位数字；   学院专业班级不记格式-->
+<!--        var uName = $('#uName').val();-->
+<!--        var name = $('#name').val();-->
+<!--        var uPassword = $('#uPassword').val();-->
+<!--        var uPassword1 = $('#uPassword1').val();-->
+<!--        var tel = $('#tel').val();-->
+<!--        var academy = $('#academy').val();-->
+<!--        var grade = $('#grade').val();-->
+<!--        var major = $('#major').val();-->
+
+<!--        if (uName == "" || name == "" || uPassword == "" || uPassword1 == "" || tel == "" || academy == "" || grade == "" || major == ""){-->
+<!--            alert("内容不能为空");-->
+<!--            return;-->
+<!--        }-->
+<!--        else{-->
+<!--            if (uName.length!= 12){-->
+<!--                alert("请填写正确的学号");-->
+<!--                return;-->
+<!--            }-->
+<!--            if (uPassword.length< 6 || uPassword.length> 12){-->
+<!--                alert("密码至少6位或不超于12位");-->
+<!--                return;-->
+<!--            }-->
+<!--            if (uPassword!= uPassword1){-->
+<!--                alert("两次密码不一致");-->
+<!--                return;-->
+<!--            }-->
+<!--            if (tel.length!= 11){-->
+<!--                alert("请填写正确的手机号码");-->
+<!--                return;-->
+<!--            }else {-->
+<!--                sendUserInfo();-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+</body>
+</html>

@@ -1,0 +1,304 @@
+﻿<header id="navbar">
+
+    <div id="navbar-container" class="boxed">
+        <!--Brand logo & name-->
+        <!--================================-->
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand">
+                <img src="img/logo.png" alt="Nifty Logo" class="brand-icon">
+                <div class="brand-title">
+                    <span class="brand-text">咸鱼帮</span>
+                </div>
+            </a>
+        </div>
+        <!--================================-->
+        <!--End brand logo & name-->
+
+        <!--Navbar Dropdown-->
+        <!--================================-->
+        <div class="navbar-content clearfix">
+            <ul class="nav navbar-top-links pull-left">
+                <!--伸缩导航栏按钮-->
+                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                <li class="tgl-menu-btn">
+                    <a class="mainnav-toggle" href="#">
+                        <i class="demo-pli-view-list"></i>
+                    </a>
+                </li>
+                <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                <!--End 伸缩导航栏按钮-->
+            </ul>
+            <ul class="nav navbar-top-links pull-right">
+                <li>
+<!--                    <a href="login.html">登录</a>-->
+<!--                    <a href="register.html">注册</a>-->
+                    <a href="introduce.html">退出</a>
+                </li>
+            </ul>
+
+        </div>
+        <!--================================-->
+        <!--End Navbar Dropdown-->
+
+    </div>
+</header>
+
+<!--发布任务弹窗-->
+<div class="modal fade" id="fabu_window" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog" style="width: auto">
+        <div class="modal-content">
+
+            <!--Modal header-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                <h4 class="modal-title">发布任务</h4>
+            </div>
+
+            <!--Modal body-->
+            <div class="modal-body">
+                <div class="panel-body">
+                    <form method="post" id="release_form" class="form-horizontal" enctype="multipart/form-data">       <!--enctype：对表单数据进行编码-->
+                        <input type="hidden" name="orderNo">
+                        <div class="row">
+                            <div class="col-md-5 mar-btm">
+                                <input  id="title" name="title" type="text" class="form-control" placeholder="任务标题(1-16字）" autofocus>
+                            </div>
+
+                            <div class="col-md-3 mar-btm">
+                                <select id="orderType" name="orderType"  class="form-control">
+                                    <!--问后台类型的传值-->
+                                    <option value="组团">组团</option>
+                                    <option value="跑腿">跑腿</option>
+                                    <option value="寻物">寻物</option>
+                                    <option value="闲置">闲置</option>
+                                    <option value="资源共享">资源共享</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                            </div>
+                            <textarea id="orderDetail" name="orderDetail" placeholder="详细内容：&#10;例：&#10;9月9号晚上9点,9栋109号房,找一个一起写作业的小姐姐" rows="13"
+                                      class="form-control" autofocus></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!--Modal footer-->
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default  btn-success btn-hover-warning" type="button" onclick="faburewnu()">发布</button>
+                <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--发布任务接口-->
+<script>
+    function faburewnu() {
+        var url = "http://localhost:8081/schoolhelp/missionController/addMission.do";
+        var uName = localStorage.getItem("userLocalId");
+        var missionTitle = $('#title').val();
+        var missionDetail = $('#orderDetail').val();
+        var myselect = document.getElementById("orderType");　　//获取select对象
+        var index = myselect.selectedIndex;　　　　　　　　　//获取被选中的索引
+        var missionType = myselect.options[index].value;
+        var count = "1";
+        console.log("missionType:",missionType);
+        $.ajax({
+            url:url,
+            type:"get",
+            dataType:"json",
+            data:{
+                uName:uName,
+                missionTitle:missionTitle,
+                missionDetail:missionDetail,
+                missionType:missionType,
+                count:count
+            },
+            success:function (data) {
+                alert("发布成功");
+                window.location.href="index1.html";
+            },
+            error:function (data) {
+                alert("发布失败");
+                console.log("发布失败data：",data);
+            }
+        })
+    }
+</script>
+
+<!--系统弹窗-->
+<!--<div class="modal fade" id="system_tip" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+
+<!--            &lt;!&ndash;Modal header&ndash;&gt;-->
+<!--            <div class="modal-header">-->
+<!--                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>-->
+<!--                <h4 class="modal-title">系统提示</h4>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash;Modal body&ndash;&gt;-->
+<!--            <div class="modal-body">-->
+<!--                <h3 style="text-align: center" id="tip_content"></h3>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash;Modal footer&ndash;&gt;-->
+<!--            <div class="modal-footer">-->
+<!--                <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<script>
+    function fabuModal() {
+        $("#fabu_window").modal("show");
+    }
+</script>
+
+<!--系统提示框-->
+<script>
+    function show_system_tip(msg) {
+        $("#tip_content").html(msg);
+        $("#system_tip").modal("show");
+        //refresh();
+    }
+</script>
+
+<!-- 菜单区别 -->
+<script>
+    var s_url=window.location.pathname;
+    //根据文件夹路径来改
+    //s_url = s_url.replace("/WebWork/","");                      //在webstorm里打开运行
+    s_url = s_url.replace("/","");                            //在服务器上运行
+    //alert(s_url);
+    var now_url = '';
+    for(var i = 0;i<$("#mainnav-menu li").length;i++){
+        now_url = $("#mainnav-menu li a").eq(i).attr("href");
+        if(now_url == s_url){
+            $("#mainnav-menu a").eq(i).parent().addClass("active-link");
+            $("#mainnav-menu a").eq(i).parent().parent().parent().addClass("active-sub");
+            $("#mainnav-menu a").eq(i).parent().parent().parent().parent().parent().addClass("active");
+            $("#mainnav-menu a").eq(i).parent().parent().addClass("in");
+        }else{
+            $("#mainnav-menu a").eq(i).parent().removeClass("active-link");
+        }
+    }
+</script>
+
+<style>
+    .fff{
+        position:fixed;
+        left:0;
+        bottom:0;
+        width:219px;
+    }
+</style>
+
+
+<nav id="mainnav-container">
+    <div id="mainnav">
+        <!--菜单-->
+        <!--================================-->
+        <div id="mainnav-menu-wrap">
+            <div class="nano">
+                <div class="nano-content">
+                    <!--个人信息栏-->
+                    <div id="mainnav-profile" class="mainnav-profile">
+                        <div class="profile-wrap">
+                            <!--<div class="pad-btm">
+                                &lt;!&ndash;<span class="label label-success pull-right">New</span>&ndash;&gt;
+                                <img class="img-circle img-sm img-border" src="img/profile-photos/2.png" alt="Profile Picture">
+                            </div>-->
+                            <a href="#profile-nav" class="box-block" data-toggle="collapse" aria-expanded="false">
+<!--                                    <span class="pull-right dropdown-toggle">-->
+<!--                                        <i class="dropdown-caret"></i>-->
+<!--                                    </span>-->
+                                <p class="mnp-name" id="index_user">游客</p>        <!--用户标识-->
+                            </a>
+                        </div>
+                        <!-- 用户个人工具栏 -->
+                        <div id="profile-nav" class="collapse list-group bg-trans">
+                            <a href="user_message.html" class="list-group-item">
+                                <i class="demo-pli-male icon-lg icon-fw"></i> 账号信息
+                            </a>
+                            <!--传值给后台，设置一个模态框用来系统提示是否登录成功，成功则返回一个拥有用户信息的主页-->
+                            <a href="introduce.html" class="list-group-item">
+                                <i class="demo-pli-unlock icon-lg icon-fw"></i>退出
+                            </a>
+                            <!--传值给后台，设置一个模态框用来系统提示是否注销成功，成功则返回一个游客主页-->
+<!--                            <a href="index.html" class="list-group-item">-->
+<!--                                <i class="demo-pli-unlock icon-lg icon-fw"></i> 注销-->
+<!--                            </a>-->
+                        </div>
+                        <!-- End 用户个人工具栏 -->
+                    </div>
+                    <!--导航功能栏-->
+                    <ul id="mainnav-menu" class="list-group">
+                        <!-- 首页按钮 -->
+                        <li>
+                            <a href="index1.html">
+                                <i class="demo-psi-home"></i>
+                                <span class="menu-title">
+                                        <strong>首页</strong>
+                                    </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a onclick="fabuModal()">
+                                <i class="demo-psi-pen-5"></i>
+                                <span class="menu-title">
+                                        <strong>发布任务</strong>
+                                    </span>
+                            </a>
+                        </li>
+                        <li class="list-divider"></li>
+                        <li>
+                            <a href="#">
+                                <i class="demo-psi-receipt-4"></i>
+                                <span class="menu-title">我接受的任务</span>
+                                <i class="arrow"></i>
+                            </a>
+                            <ul class="collapse">
+                                <li><a href="accept_doing.html">已接取</a></li>
+                                <li><a href="accept_wait.html">待被确认完成</a></li>
+                                <li><a href="accept_done.html">任务已结束</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="demo-psi-receipt-4"></i>
+                                <span class="menu-title">我发布的任务</span>
+                                <i class="arrow"></i>
+                            </a>
+                            <ul class="collapse">
+                                <li><a href="release_waiting.html">待被接取</a></li>
+                                <li><a href="release_doing.html">已被接取</a></li>
+                                <li><a href="release_done.html">已被完成</a></li>
+                                <li><a href="release_destroy.html">任务结束</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!--关于我们-->
+                    <div class="mainnav-widget fff" style="height: 120px">
+                        <div id="demo-wg-server" class="hide-small mainnav-widget-content" style="height: 120px">
+                            <ul class="list-group">
+                                <li class="list-header pad-no pad-ver" style="margin-top: 35px">关于我们咸鱼帮</li>
+                                <li class="mar-btm">
+                                    <p>联系请加微信：13794988241</p>
+<!--                                    <p>仅供学术参考</p>-->
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--================================-->
+        <!--End 菜单-->
+    </div>
+
+    <script>
+        document.getElementById("index_user").innerHTML = localStorage.getItem("userLocalName");
+    </script>
+</nav>

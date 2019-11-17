@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page_title">首页+</title>
+    <meta name="keywords" content="{$SiteInfo.keywords}">
+    <meta name="description" content="{$SiteInfo.description}">
+    <style>
+        .action_btn{
+            height: 28px;
+            padding: 0 20px !important;
+        }
+    </style>
+</head>
+
+<body>
+<!--蒙版-->
+<div id="mask_div" style="width: 100%;background-color: #FFFFFF;height: 2000px;z-index: 19;display: block;position: relative;"></div>
+<!--header的容器-->
+<div id="header"></div>
+
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+    <!--menu的容器-->
+    <div id="menu"></div>
+
+    <div class="boxed">
+        <div id="content-container">
+            <div id="page-content">
+                <div class="panel">
+                    <div class="panel-body" style="width: 100%;">
+                        <h1 class="page-header text-overflow pad-btm">首页任务列表
+                            <!--搜索框-->
+                            <!--                            <button onclick="fresh()" class="btn btn-default btn-labeled action_btn" style="float: right; height: 30px; margin: 0 0 0 5px;">搜索</button>-->
+                            <!--                            <input id="search_data" name="search_data" class="form-control" type="text" placeholder="大家都在找：拼车"-->
+                            <!--                                   style="float: right; width: 250px; height: 30px;">-->
+                        </h1>
+<!--                        <button onclick="showDetail()">弹框测试</button>-->
+                        <!--                        <div id="iii"></div>-->
+                        <!--                        <div id="nnn"></div>-->
+
+                        <!--任务类型导航栏-->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <div class="panel-control"style="padding-left: 12px">
+                                    <ul class="nav nav-tabs" id="orderUl" >
+                                        <li class="active"><a href="#mission" data-toggle="tab" aria-expanded="true">全部</a></li>
+                                        <li class=""><a href="#mission" data-toggle="tab" aria-expanded="false">寻物</a></li>
+                                        <li class=""><a href="#mission" data-toggle="tab" aria-expanded="false">组团</a></li>
+                                        <li class=""><a href="#mission" data-toggle="tab" aria-expanded="false">跑腿</a></li>
+                                        <li class=""><a href="#mission" data-toggle="tab" aria-expanded="false">闲置</a></li>
+                                        <li class=""><a href="#mission" data-toggle="tab" aria-expanded="false">资源共享</a></li>
+                                        <li class=""><a href="#mission" data-toggle="tab" aria-expanded="false">其他</a></li>
+                                    </ul>
+                                </div>
+                                <h3 class="panel-title" style="padding-right: 0">任务类型
+                                    <input id="search_data" name="search_data" class="form-control" type="text" placeholder="大家都在找：拼车"
+                                           style="float: right; width: 300px; height: 30px;margin-top: 14px">
+                                </h3>
+
+                            </div>
+
+                            <!--Panel body-->
+                            <div class="panel-body">
+                                <div class="tab-content">
+                                    <!--任务面板 -->
+                                    <div class="tab-pane fade active in" id="missions">
+
+                                    </div>
+                                    <!--任务面板end -->
+                                </div>
+                            </div>
+
+                            <!--分页div-->
+                            <div class="panel-body text-center" id="fenye">
+                                <!--                                <p><span style="border: #3a3f42; border-style: solid;" >111</span></p>-->
+                                <p class="pYe">
+                                    <button id="tou" class="btn btn-default demo-pli-arrow-left"></button>
+                                    <span>
+                                        <span>第</span>
+                                        <span class="ye">1</span>
+                                        <span>页</span>
+                                    </span>
+                                    <button id="wei" class="btn btn-default demo-pli-arrow-right"></button>
+                                </p>
+                            </div>
+                            <!--分页div end-->
+                        </div>
+                        <!--                        <hr class="hr-sm">-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<!--加载菜单-->
+<script src="js/jquery-2.2.4.min.js"></script>
+<script>
+    $("#menu").load("menu.html",function () {
+        $("#header").load("header.html",function () {
+            $("#mask_div").hide();
+        });
+    });
+</script>
+
+<!--点击类型刷新任务（包括关键字）-->
+<script>
+    var getPageNo = $('.ye').text();
+    var getLiValue= "全部";
+    // 点击类型传值
+    $("ul li").each(function () {
+        $(this).click(function () {
+            var url = "http://localhost:8081/schoolhelp/missionController/queryType.do";
+            var indexPageNo = getPageNo;
+            console.log("当前页：",getPageNo);
+            console.log("当前页indexPageNO：",indexPageNo);
+            var word = $('#search_data').val();
+            getLiValue = $(this).text().toString();
+            //alert(getLiValue);
+            console.log("fresh获取当前筛选框类型liValue:",getLiValue);
+            $.ajax({
+                url:url,
+                type:"get",
+                dataType:"json",
+                data:{
+                    pageNo:indexPageNo,
+                    missionType:getLiValue,
+                    word:word
+                },
+                success:function (data) {
+                    console.log("data:",data);
+                    console.log("data.list",data.list);
+                    console.log("fresh:类型不data:",getLiValue);
+                    //console.log("fresh:类型:",data.list.missionType);
+                    console.log("fresh:页码不data:",indexPageNo);
+                    console.log("fresh:测试页面 data['totalPage']:"+data['totalPage']);
+                    console.log("fresh:测试页面 totalCount:"+data.totalCount);
+                    console.log("fresh:获取页码 data['pageNo']:"+data['pageNo']);
+
+                    $('#mission').html('');
+                    for (var i= 0; i< data.list.length; i++){
+                        $("input[name='missionDetailNo']").val(data.list[i]['missionNo']);
+                        console.log("模态框里的订单号：",$("input[name='missionDetailNo']").val());
+                        console.log("fresh for's data.list[%d]['missionType']:",i,data.list[i]['missionType']);
+                        console.log("fresh for's:测试页面 data['totalPage']:"+data['totalPage']);
+
+                        //$('#ye').html(data['pageNo']);
+                        $('#missions').html('');
+                        for (var i= 0; i< data.list.length; i++){
+                            console.log("start for's data.list[%d]['missionType']:",i,data.list[i]['missionType']);
+                            console.log("start for's:测试页面 data['totalPage']:"+data['totalPage']);
+                            $('#ye').html(data.pageNo);
+                            $('#missions').append('<div class="panel panel-bordered-info" >\n' +
+                                '                    <div class="tab-pane" >\n' +
+                                '                        <h4 class="panel-title" >\n' +
+                                '                            <a>\n' +
+                                '                                <span>【<span>'+ data.list[i]['missionType'] +'</span>】</span>' + data.list[i]['missionTitle'] +
+                                '                                <p style="float: right;">'+ data.list[i]['countReceive'] + '/' + data.list[i]['count'] +'</p>\n' +
+                                '                                <p style="float: right; visibility: hidden">No:'+ data.list[i]['missionNo']+'</p>\n' +
+                                '                                <p style="float: right; visibility: hidden">'+ data.list[i]['uName'] +'</p>\n' +
+                                '                            </a>\n</h4>\n</div>\n' +
+                                '                          <div class="panel-body" style="padding-top: 0">\n' +
+                                '                               <p style="width: 1000px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">' + data.list[i]['missionDetail']+ '</p>\n' +
+                                '                                   <a style="float: right;" onclick="showDetail('+ data.list[i]['missionNo'] + ')">进入详情</a>\n' +
+                                '                           </div>\n</div>\n</div>'
+                            );
+                        }
+                    }
+                    if (data.totalCount < 1) {
+                        console.log("fresh for's:测试页面 data['totalCount']:"+data['totalCount']);
+                        $("#missions").html('<h3 class="panel-title">暂无任务</h3>');
+                        $('#fenye').hide();
+                    }
+                },
+                error:function () {
+                    console.log("index1 fresh() error");
+                },
+                fail:function () {
+                    console.log("index1 fresh() fail");
+                }
+            })
+        });
+    });
+
+    //alert(getLiValue);
+    // 点击页码传值
+    $('#tou').click(function () {
+        getPageNo = $('.ye').text() - 1;
+        console.log("当前页：",getPageNo);
+        if (getPageNo<1){
+            getPageNo = 1;
+            console.log("<1当前页：",getPageNo);
+        }else {
+            $('.ye').text(getPageNo);
+        }
+        var url = "http://localhost:8081/schoolhelp/missionController/queryType.do";
+        var word = $('#search_data').val();
+        $.ajax({
+            url:url,
+            type:"get",
+            dataType:"json",
+            data:{
+                pageNo:getPageNo,
+                missionType:getLiValue,
+                word:word
+            },
+            success:function (data) {
+                console.log("data:",data);
+                console.log("data.list",data.list);
+                console.log("fresh:类型不data:",getLiValue);
+                //console.log("fresh:类型:",data.list.missionType);
+                console.log("fresh:页码不data:",getPageNo);
+                console.log("fresh:测试页面 data['totalPage']:"+data['totalPage']);
+                console.log("fresh:测试页面 totalCount:"+data.totalCount);
+                console.log("fresh:获取页码 data['pageNo']:"+data['pageNo']);
+
+                $('#mission').html('');
+                for (var i= 0; i< data.list.length; i++){
+                    console.log("fresh for's data.list[%d]['missionType']:",i,data.list[i]['missionType']);
+                    console.log("fresh for's:测试页面 data['totalPage']:"+data['totalPage']);
+
+                    //$('#ye').html(data['pageNo']);
+                    $('#missions').html('');
+                    for (var i= 0; i< data.list.length; i++){
+                        console.log("模态框里的订单号：",$("input[name='missionDetailNo']").val());
+                        console.log("start for's data.list[%d]['missionType']:",i,data.list[i]['missionType']);
+                        console.log("start for's:测试页面 data['totalPage']:"+data['totalPage']);
+                        $('#ye').html(data.pageNo);
+                        $('#missions').append('<div class="panel panel-bordered-info" >\n' +
+                            '                    <div class="tab-pane" >\n' +
+                            '                        <h4 class="panel-title" >\n' +
+                            '                            <a>\n' +
+                            '                                <span>【<span>'+ data.list[i]['missionType'] +'</span>】</span>' + data.list[i]['missionTitle'] +
+                            '                                <p style="float: right;">'+ data.list[i]['countReceive'] + '/' + data.list[i]['count'] +'</p>\n' +
+                            '                                <p style="float: right; visibility: hidden">No:'+ data.list[i]['missionNo']+'</p>\n' +
+                            '                                <p style="float: right; visibility: hidden">'+ data.list[i]['uName'] +'</p>' +
+                            '                            </a>\n</h4>\n</div>\n' +
+                            '                          <div class="panel-body" style="padding-top: 0">\n' +
+                            '                               <p style="width: 1000px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">' + data.list[i]['missionDetail']+ '</p>\n' +
+                            '                                   <a style="float: right;"  onclick="showDetail('+ data.list[i]['missionNo'] + ')" >进入详情</a>\n' +
+                            '                           </div>\n</div>\n</div>'
+                        );
+                    }
+                }
+                if (data.totalCount < 1) {
+                    console.log("fresh for's:测试页面 data['totalCount']:"+data['totalCount']);
+                    $("#missions").html('<h3 class="panel-title">暂无订单</h3>');
+                    $('#fenye').hide();
+                }
+            },
+            error:function () {
+                console.log("index1 fresh() error");
+            },
+            fail:function () {
+                console.log("index1 fresh() fail");
+            }
+        })
+    });
+    $('#wei').click(function () {
+        getPageNo = Number($('.ye').text()) + 1;
+        console.log("当前页：",getPageNo);
+        $('.ye').text(getPageNo);
+        var url = "http://localhost:8081/schoolhelp/missionController/queryType.do";
+        var word = $('#search_data').val();
+        $.ajax({
+            url:url,
+            type:"get",
+            dataType:"json",
+            data:{
+                pageNo:getPageNo,
+                missionType:getLiValue,
+                word:word
+            },
+            success:function (data) {
+                if (getPageNo>data['totalPage']){
+                    $('.ye').text(data['totalPage']);
+                    data['totalPage']= Number(data['totalPage'])-1;
+                }
+                console.log("data:",data);
+                console.log("data.list",data.list);
+                console.log("fresh:类型不data:",getLiValue);
+                //console.log("fresh:类型:",data.list.missionType);
+                console.log("fresh:页码不data:",getPageNo);
+                console.log("fresh:测试页面 data['totalPage']:"+data['totalPage']);
+                console.log("fresh:测试页面 totalCount:"+data.totalCount);
+                console.log("fresh:获取页码 data['pageNo']:"+data['pageNo']);
+
+                $('#mission').html('');
+                for (var i= 0; i< data.list.length; i++){
+                    console.log("fresh for's data.list[%d]['missionType']:",i,data.list[i]['missionType']);
+                    console.log("fresh for's:测试页面 data['totalPage']:"+data['totalPage']);
+
+                    //$('#ye').html(data['pageNo']);
+                    $('#missions').html('');
+                    for (var i= 0; i< data.list.length; i++){
+                        console.log("模态框里的订单号：",$("input[name='missionDetailNo']").val());
+                        console.log("start for's data.list[%d]['missionType']:",i,data.list[i]['missionType']);
+                        console.log("start for's:测试页面 data['totalPage']:"+data['totalPage']);
+                        $('#ye').html(data.pageNo);
+                        $('#missions').append('<div class="panel panel-bordered-info" >\n' +
+                            '                    <div class="tab-pane" >\n' +
+                            '                        <h4 class="panel-title" >\n' +
+                            '                            <a>\n' +
+                            '                                <span>【<span>'+ data.list[i]['missionType'] +'</span>】</span>' + data.list[i]['missionTitle'] +
+                            '                                <p style="float: right;">'+ data.list[i]['countReceive'] + '/' + data.list[i]['count'] +'</p>\n' +
+                            '                                <p style="float: right; visibility: hidden">No:'+ data.list[i]['missionNo']+'</p>\n' +
+                            '                                <p style="float: right; visibility: hidden">'+ data.list[i]['uName'] +'</p>' +
+                            '                            </a>\n</h4>\n</div>\n' +
+                            '                          <div class="panel-body" style="padding-top: 0">\n' +
+                            '                               <p style="width: 1000px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">' + data.list[i]['missionDetail']+ '</p>\n' +
+                            '                                   <a style="float: right;" onclick="showDetail('+ data.list[i]['missionNo'] + ')" ">进入详情</a>\n' +
+                            '                           </div>\n</div>\n</div>'
+                        );
+                    }
+                }
+                if (data.totalCount < 1) {
+                    console.log("fresh for's:测试页面 data['totalCount']:"+data['totalCount']);
+                    $("#missions").html('<h3 class="panel-title">暂无订单</h3>');
+                    $('#fenye').hide();
+                }
+            },
+            error:function () {
+                console.log("index1 fresh() error");
+            },
+            fail:function () {
+                console.log("index1 fresh() fail");
+            }
+        })
+    });
+</script>
+
+<!--进入首页加载全部类型任务-->
+<script>
+    var userId = localStorage.getItem("userLocalId");
+
+    function start() {
+        //alert("start()");
+        var url = "http://localhost:8081/schoolhelp/missionController/queryType.do";
+        var indexPageNo = "1";
+        var liValue = '全部';
+        // var word = $('#search_data').val();
+        var word = $('#search_data').val();
+        $.ajax({
+            url:url,
+            type:"get",
+            dataType:"json",
+            data:{
+                pageNo:indexPageNo,
+                missionType:liValue,
+                word:word
+            },
+            success:function (data) {
+                console.log("start:data:",data);
+                console.log("start:一共有多少条数据 totalCount:"+data.totalCount);
+                console.log("start:一共有多少页 data['totalPage']:"+data['totalPage']);
+                console.log("start:获取当前页面 data['pageNo']:"+data['pageNo']);
+
+                $('#missions').html('');
+                for (var i= 0; i< data.list.length; i++){
+                    console.log("模态框里的订单号：",$("input[name='missionDetailNo']").val());
+                    console.log("start for's data.list[%d]['missionType']:",i,data.list[i]['missionType']);
+                    console.log("start for's:测试页面 data['totalPage']:"+data['totalPage']);
+                    $('#ye').html(data.pageNo);
+                    $('#missions').append('<div class="panel panel-bordered-info" >\n' +
+                        '                    <div class="tab-pane" >\n' +
+                        '                        <h4 class="panel-title" >\n' +
+                        '                            <a>\n' +
+                        '                                <span>【<span>'+ data.list[i]['missionType'] +'</span>】</span>' + data.list[i]['missionTitle'] +
+                        '                                <p style="float: right;">'+ data.list[i]['countReceive'] + '/' + data.list[i]['count'] +'</p>\n' +
+                        '                                <p style="float: right; visibility: hidden">No:'+ data.list[i]['missionNo']+'</p>\n' +
+                        '                                <p style="float: right; visibility: hidden">'+ data.list[i]['uName'] +'</p>' +
+                        '                            </a>\n</h4>\n</div>\n' +
+                        '                          <div class="panel-body" style="padding-top: 0">\n' +
+                        '                               <p style="width: 1000px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">' + data.list[i]['missionDetail']+ '</p>\n' +
+                        // '                                   <a style="float: right;" onclick="showDetail(orderNo)" ">进入详情</a>\n' +
+                        '                                   <a style="float: right;"  onclick="showDetail('+ data.list[i]['missionNo'] + ')">进入详情</a>\n' +
+                        '                           </div>\n</div>\n</div>'
+                    );
+                }
+                if (data.totalCount < 1) {
+                    $("#missions").html('<h3 class="panel-title">暂无订单</h3>');
+                    $('#fenye').hide();
+                }
+            },
+            error:function () {
+                console.log("index1 start() error");
+            }
+        });
+    }
+    start();
+</script>
+
+
+
+
+<!--详情页面弹窗-->
+<div class="modal fade" id="detail_window" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal-dialog" style="width: auto">
+        <div class="modal-content">
+
+            <!--Modal header-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                <h4 class="modal-title">任务详情</h4>
+            </div>
+            <!--Modal body-->
+            <div class="modal-body">
+                <div class="panel-body">
+                    <form method="post" id="detail_form" class="form-horizontal" enctype="multipart/form-data">       <!--enctype：对表单数据进行编码-->
+                        <input type="hidden" name="missionDetailNo">      <!--enctype：对表单数据进行编码-->
+                        <!-- <input type="hidden" name="orderNo"> -->
+                        <div class="form-group">
+                            <div class="col-md-7 mar-btm">任务标题
+                                <input  id="title" name="title" type="text" class="form-control"disabled="">
+                            </div>
+                            <div class="col-md-3 mar-btm">任务类型
+                                <input id="orderType" name="orderType"  class="form-control"  disabled="">
+                            </div>
+                            <div class="col-md-2 mar-btm" style="float: right">已接人数
+                                <input  id="userCount" name="userCount" type="text" class="form-control" disabled="">
+                            </div>
+                            <div class="pad-ver bord-ver">
+                                <p style="max-width: 800px" id="missionDetail"></p>
+<!--                                <input name="orderDetail"  class="form-control" rows="13" disabled="" type="text" value="">-->
+                            </div>
+                        </div>
+<!--                        <textarea id="orderDetail" name="orderDetail" rows="13" class="form-control"  disabled=""></textarea>-->
+                    </form>
+                </div>
+            </div>
+
+            <!--Modal footer-->
+            <div class="modal-footer">
+                <input data-dismiss="modal" class="btn btn-default  btn-success btn-hover-warning" type="submit" onclick="getMission(ddd)" value="接取">
+                <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var ddd;
+    // 详细任务显示和接口
+    function showDetail(missionNo) {
+        ddd = missionNo;            //把后台的order_id赋值给orderNo之后再赋值给这个放在接单模态框的已经hidden的名为orderNo的input里
+        var url = "http://localhost:8081/schoolhelp/missionController/query.do";
+        console.log("模态框里的missionNo:",missionNo);
+        $.ajax({
+            url:url,
+            type:"get",
+            dataType:"json",
+            data:{
+                missionNo:missionNo
+            },
+            success:function (data) {
+                console.log("data:",data);
+                var jie = data['countReceive'];
+                var gong = data['count'];
+                console.log("接取人数:",data['countReceive']);
+                console.log("一共的人数:",data['count']);
+                console.log("标题",data.missionTitle);
+                console.log("类型",data.missionType);
+                console.log("人数",jie + '/' + gong);
+                console.log("内容",data.missionDetail);
+                $('input[name=\'title\']').val(data.missionTitle);
+                $('input[name=\'orderType\']').val(data.missionType);
+                $('input[name=\'userCount\']').val(jie + '/' + gong);
+                document.getElementById("missionDetail").innerHTML = data.missionDetail;
+                // $('input[name=\'missionDetail\']').val(data.missionDetail);
+                // document.getElementsByName("userCount").innerHTML(data.missionDetail);
+                // $('#missionDetail').val(data.missionDetail);
+                $('#detail_window').modal("show");
+
+            },
+            error:function (data) {
+                var jie = data['countReceive'];
+                var gong = data['count'];
+                console.log("打开详细任务失败的data",data);
+                console.log("标题",data.missionTitle);
+                console.log("类型",data.missionType);
+                console.log("人数",jie + '/' + gong);
+                console.log("内容",data.missionDetail);
+                alert("打开信息任务失败");
+            }
+        });
+    }
+
+    // 接单接口
+    function getMission(missionNo) {
+        console.log("接单按钮missionNo:",missionNo);
+
+        var url ="http://localhost:8081/schoolhelp/missionController/receiveMission.do";
+        $.ajax({
+            url:url,
+            type:"get",
+            dataType:"json",
+            data:{
+                missionNo:missionNo,
+                uName:userId
+            },
+            success:function (data) {
+                console.log("接单按钮的data：",data);
+                alert("接取任务成功！");
+                start();
+            },
+            error:function (data) {
+                console.log("接取任务按钮失败的data：",data);
+                alert("接取失败");
+            }
+        })
+    }
+</script>
+
+
+<!--// 获取本地存储的学号和姓名-->
+<!--document.getElementById("iii").innerHTML = localStorage.getItem("userLocalId");-->
+<!--// document.getElementById("nnn").innerHTML = localStorage.getItem("userLocalName");-->
+</html>

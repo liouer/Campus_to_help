@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<!--用户账号信息页面-->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page_title">账号信息</title>
+    <meta name="keywords" content="{$SiteInfo.keywords}">
+    <meta name="description" content="{$SiteInfo.description}">
+    <style>
+        .action_btn {
+            height: 28px;
+            padding: 0 20px !important;
+        }
+    </style>
+</head>
+
+<body>
+<div id="mask_div"
+     style="width: 100%;background-color: #FFFFFF;height: 2000px;z-index: 19;display: block;position: relative;"></div>
+<!--header的容器-->
+<div id="header"></div>
+
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+    <!--menu的容器-->
+    <div id="menu"></div>
+
+    <div class="boxed">
+        <div id="content-container">
+            <div id="page-content">
+                <div class="panel">
+                    <div class="panel-body" style="width: 100%; padding-bottom: 0">
+                        <h1 class="page-header text-overflow pad-btm">账号信息</h1>
+<!--                        <p id="tt">爸爸</p>-->
+<!--                        <button onclick="change()">变妈妈</button>-->
+<!--                        <script>-->
+<!--                            $(function() {-->
+<!--                                var mama = "妈妈";-->
+<!--                                alert(mama);-->
+<!--                                $('#tt').text(mama);-->
+<!--                            })-->
+<!--                        </script>-->
+                        <hr class="hr-sm">
+                    </div>
+                    <div class="panel-body">
+                        <form action="" class="panel-body form-horizontal form-padding" id="message_form">
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">姓 名</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" disabled id="name" name="name" value="">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">学 号</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" disabled id="uName" name="uName" value="">
+                                    <small class="help-block">这同时是你的登录账号</small>
+                                </div>
+                            </div>
+
+<!--                            <div class="form-group">-->
+<!--                                <label class="col-md-1 control-label">密 码</label>-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <input type="text" class="form-control" disabled id="uPassword" name="uPassword" value="">-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">电话号码</label>
+                                <div class="col-md-6">
+                                    <input type="tel" class="form-control" disabled id="tel" name="tel" value="">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">学 院</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" disabled id="academy" name="academy" value="">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">专 业</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" disabled id="major" name="major" value="">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">班 级</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" disabled id="grade" name="grade" value="">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!--加载菜单-->
+<script src="js/jquery-2.2.4.min.js"></script>
+<script>
+    $("#menu").load("menu.html", function () {
+        $("#header").load("header.html", function () {
+            $("#mask_div").hide();
+        });
+    });
+</script>
+
+<!--&lt;!&ndash;使用url传值获取学号urlId&ndash;&gt;-->
+<!--<script>-->
+<!--    function getUrlNo() {//在p里显示用户的名字。这的名字是在login页面通过调用后台的登陆标识来得到的-->
+<!--        var url1 = location.search;-->
+<!--        var urlId;-->
+<!--        var urlName;-->
+<!--        var i = 0;-->
+<!--        if (url1.indexOf("?") != -1){-->
+<!--            var str1 = url1.substr(1);-->
+<!--            var strs = str1.split("=");-->
+<!--            urlName = decodeURI(strs[1]);-->
+<!--            urlId = strs[2];-->
+<!--            for (i;i<strs.length;i++){-->
+<!--                console.log("strs[%d]:",i,strs[i]);-->
+<!--            }-->
+<!--        }-->
+<!--        console.log("uMessage 通过url已获取学号", urlId);-->
+<!--        console.log("uMessage 通过url已获取名字", urlName);-->
+<!--    }-->
+<!--    getUrlNo();-->
+<!--</script>-->
+
+<!-- 获取数据填入文本框 -->
+<!--等dom加载完后执行的函数-->
+<script>
+    function inputting(){
+        // var url = "http://47.103.212.208/PHP/getOrderList.php";         //后台方法地址
+        var url = "http://localhost:8081/schoolhelp/userController/queryUser.do";
+        //var data = new Object();                                        //获取登录的账号
+        //data.uName = urlId;
+        var name = localStorage.getItem("userLocalName");
+        var id = localStorage.getItem("userLocalId");
+        $.ajax({                                                        //利用ajax进行前端与后台的数据交换
+            url: url,                                                   //请求url
+            type: "post",                                               //请求方法为post
+            data: {
+                uName:id
+            },
+            dataType: "json",                                           //传输的是json数据
+            success: function (data) {
+                console.log("data:",data);
+                //if (data.status == 200){
+                    $(this).val("");                                     //清空上次input框里的数据
+                    $('#uName').val(data.uName);
+                   // $('#uPassword').val(data.uPassword);
+                    $('#name').val(data.name);
+                    $('#academy').val(data.academy);
+                    $('#major').val(data.major);
+                    $('#grade').val(data.grade);
+                    $('#tel').val(data.tel);
+                //}
+                // else {
+                //     console.log("页面跑丢啦");
+                // }
+
+            }
+        });
+    }
+    inputting();
+</script>
+
+</html>
+
